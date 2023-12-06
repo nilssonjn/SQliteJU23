@@ -45,9 +45,10 @@ public class Labb3JensNilssonJU23 {
                 switch (selection) {
                     case "0" -> System.out.println("Exiting the program...");
                     case "1" -> showAllMovies();
+                    default -> System.out.print("Choose the right option...\n");
                 }
             } catch (IndexOutOfBoundsException exception) {
-                System.out.println("Choose the right option...");
+                scanner.nextLine();
             }
         } while (!selection.equals("0"));
     }
