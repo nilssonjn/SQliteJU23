@@ -21,12 +21,12 @@ public class Labb3JensNilssonJU23 {
     private static void printMenuOptions() {
         System.out.print("""
                 Choose an option:
-                =============
+                =================
                 0. Exit the program
                 1. Show all movies
                 2. Add a new movie
                 3. Update a existing movie
-                4. Remove a movie
+                4. Delete a movie
                 5. Show all menu options
                 """);
     }
@@ -61,6 +61,28 @@ public class Labb3JensNilssonJU23 {
         System.out.println("Movie ID:\tTitle\tDirector\tRating\tBudget\tGross");
     }
 
+    private static void deleteAMovie(int id) {
+        String sql = "DELETE FROM movies WHERE movieId = ?";
+
+        try {
+            Connection connection = connect();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, id);
+            preparedStatement.executeUpdate();
+            System.out.println("You have deleted a movie.");
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void deleteMovie(){
+        System.out.println("Insert the id of the movie you want to delete: ");
+        int inputId = scanner.nextInt();
+        deleteAMovie(inputId);
+        scanner.nextLine();
+    }
+
     public static void main(String[] args) {
         String selection;
         do {
@@ -70,6 +92,7 @@ public class Labb3JensNilssonJU23 {
                 switch (selection) {
                     case "0" -> System.out.println("Exiting the program...");
                     case "1" -> showAllMovies();
+                    case "4" -> deleteMovie();
                     default -> System.out.print("Choose the right option...\n");
                 }
             } catch (IndexOutOfBoundsException exception) {
