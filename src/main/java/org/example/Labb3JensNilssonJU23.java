@@ -1,8 +1,6 @@
 package org.example;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.Scanner;
 
 public class Labb3JensNilssonJU23 {
@@ -34,6 +32,33 @@ public class Labb3JensNilssonJU23 {
     }
 
     private static void showAllMovies() {
+        String sql = "SELECT * FROM movies";
+
+        try {
+            Connection connection = connect();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            printMovieHeader();
+
+            while (resultSet.next()) {
+                printMovieDetails(resultSet);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void printMovieDetails(ResultSet resultSet) throws SQLException {
+        System.out.println(resultSet.getInt("movieId") + "\t" +
+                resultSet.getString("movieTitle") + "\t" +
+                resultSet.getString("movieDirector") + "\t" +
+                resultSet.getInt("movieRating") + "\t" +
+                resultSet.getInt("movieBudget") + "\t" +
+                resultSet.getInt("movieGross"));
+    }
+
+    private static void printMovieHeader() {
+        System.out.println("Movie ID:\tTitle\tDirector\tRating\tBudget\tGross");
     }
 
     public static void main(String[] args) {
