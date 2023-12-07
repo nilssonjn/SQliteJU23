@@ -1,6 +1,7 @@
 package org.example;
 
 import java.sql.*;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class Labb3JensNilssonJU23 {
@@ -25,7 +26,7 @@ public class Labb3JensNilssonJU23 {
                 0. Exit the program
                 1. Show all movies
                 2. Add a new movie
-                3. Update a existing movie
+                3. Update a movie
                 4. Delete a movie
                 5. Show all menu options
                 """);
@@ -84,7 +85,7 @@ public class Labb3JensNilssonJU23 {
     }
 
     private static void handleMovieInsert(String movieTitle, String movieDirector,
-                                          float movieRating, int movieBudget, int movieGross) {
+                                          double movieRating, int movieBudget, int movieGross) {
         String sql = "INSERT INTO movies(movieTitle, movieDirector, movieRating," +
                 "movieBudget, movieGross) VALUES(?,?,?,?,?)";
         try {
@@ -92,7 +93,7 @@ public class Labb3JensNilssonJU23 {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, movieTitle);
             preparedStatement.setString(2, movieDirector);
-            preparedStatement.setFloat(3, movieRating);
+            preparedStatement.setDouble(3, movieRating);
             preparedStatement.setInt(4, movieBudget);
             preparedStatement.setInt(5, movieGross);
             preparedStatement.executeUpdate();
@@ -109,17 +110,17 @@ public class Labb3JensNilssonJU23 {
         System.out.println("Enter the movie director: ");
         String insertDirector = scanner.nextLine();
 
-        float insertRating = validateFloatInput("Enter the movie rating :");
+        double insertRating = validateDoubleInput("Enter the movie rating :");
         int insertBudget = validateIntInput("Enter the movie budget: ");
         int insertGross = validateIntInput("Enter the movie gross: ");
         handleMovieInsert(insertTitle, insertDirector, insertRating, insertBudget, insertGross);
     }
 
-    private static int validateIntInput(String x) {
+    private static int validateIntInput(String prompt) {
         int insertBudget;
         while (true) {
             try {
-                System.out.println(x);
+                System.out.println(prompt);
                 insertBudget = Integer.parseInt(scanner.nextLine());
                 break;
             } catch (NumberFormatException e) {
@@ -129,18 +130,52 @@ public class Labb3JensNilssonJU23 {
         return insertBudget;
     }
 
-    private static float validateFloatInput(String prompt) {
-        float insertRating;
+    private static double validateDoubleInput(String prompt) {
+        double insertRating;
         while (true) {
             try {
                 System.out.println(prompt);
-                insertRating = Float.parseFloat(scanner.nextLine());
+                insertRating = Double.parseDouble(scanner.nextLine());
                 break;
             } catch (NumberFormatException e) {
                 System.out.println("Enter a valid input.");
             }
         }
         return insertRating;
+    }
+
+    private static void updateMovie(double movieRating, int movieId) {
+        String sql = "UPDATE movies SET movieRating = ? WHERE movieId = ?";
+        try {
+            Connection connection = connect();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setDouble(1, movieRating);
+            preparedStatement.setInt(2, movieId);
+            preparedStatement.executeUpdate();
+            System.out.println("Movie updated successfully!");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void updateMovieOnId(){
+        System.out.println("Enter the movie ID you want to update: ");
+        int insertUpdate = scanner.nextInt();
+        scanner.nextLine();
+
+        System.out.println("Enter the new movie rating you want to update to: ");
+        double movieRating = 0.0;
+        try {
+            movieRating = scanner.useLocale(Locale.US).nextDouble();
+            if (movieRating < 0 || movieRating > 11) {
+                System.out.println("Invalid rating. Must be between 0 - 10.");
+            }
+        } catch (java.util.InputMismatchException e) {
+            System.out.println("Enter a valid input");
+            scanner.nextLine();
+        }
+        updateMovie(movieRating, insertUpdate);
+        scanner.nextLine();
     }
 
     public static void main(String[] args) {
@@ -153,8 +188,9 @@ public class Labb3JensNilssonJU23 {
                     case "0" -> System.out.println("Exiting the program...");
                     case "1" -> showAllMovies();
                     case "2" -> insertNewMovie();
+                    case "3" -> updateMovieOnId();
                     case "4" -> deleteMovie();
-                    default -> System.out.print("Choose the right option...\n");
+                    default -> System.out.print("Invalid option...\n");
                 }
             } catch (IndexOutOfBoundsException exception) {
                 scanner.nextLine();
