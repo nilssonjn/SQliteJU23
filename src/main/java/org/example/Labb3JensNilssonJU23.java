@@ -28,8 +28,30 @@ public class Labb3JensNilssonJU23 {
                 3. Update a movie
                 4. Delete a movie
                 5. Add movie genre
-                6. Show all menu options
+                6. Show all genres
+                7. Show all menu options
                 """);
+    }
+
+    private static void showGenres () {
+        String sql = "SELECT * FROM genres";
+
+        try {
+            Connection connection = connect();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet  = statement.executeQuery(sql);
+
+            while (resultSet.next()) {
+                printGenres(resultSet);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void printGenres(ResultSet resultSet) throws SQLException {
+        System.out.println(resultSet.getInt("genreId") + "\t" +
+                resultSet.getString("genreName"));
     }
 
     private static void showAllMovies() {
@@ -218,7 +240,8 @@ public class Labb3JensNilssonJU23 {
                     case "3" -> updateMovieOnId();
                     case "4" -> deleteMovie();
                     case "5" -> insertNewGenreOnMovie();
-                    case "6" -> printMenuOptions();
+                    case "6" -> showGenres();
+                    case "7" -> printMenuOptions();
                     default -> System.out.print("Invalid option...\n");
                 }
             } catch (IndexOutOfBoundsException exception) {
