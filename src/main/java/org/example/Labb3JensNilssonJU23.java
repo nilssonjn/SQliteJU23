@@ -166,7 +166,9 @@ public class Labb3JensNilssonJU23 {
         System.out.println("Enter the new movie rating you want to update to: ");
         double movieRating = 0.0;
         try {
-            movieRating = scanner.useLocale(Locale.US).nextDouble();
+            String ratingInput = scanner.nextLine();
+            ratingInput = ratingInput.replace(',','.');
+            movieRating = Double.parseDouble(ratingInput);
             if (movieRating < 0 || movieRating > 11) {
                 System.out.println("Invalid rating. Must be between 0 - 10.");
             }
