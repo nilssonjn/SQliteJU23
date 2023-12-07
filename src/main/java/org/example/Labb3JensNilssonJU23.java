@@ -1,7 +1,6 @@
 package org.example;
 
 import java.sql.*;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class Labb3JensNilssonJU23 {
@@ -28,7 +27,8 @@ public class Labb3JensNilssonJU23 {
                 2. Add a new movie
                 3. Update a movie
                 4. Delete a movie
-                5. Show all menu options
+                5. Add movie genre
+                6. Show all menu options
                 """);
     }
 
@@ -144,6 +144,31 @@ public class Labb3JensNilssonJU23 {
         return insertRating;
     }
 
+    private static void handleMovieGenre(String genreName, int movieId) {
+        String sql = "UPDATE movieGenre SET movieGId = " +
+                "(SELECT genreId FROM genres WHERE genreName = ?)" +
+                "WHERE movieMId = ?";
+        try {
+            Connection connection = connect();
+            PreparedStatement preparedStatement = connect().prepareStatement(sql);
+            preparedStatement.setString(1, genreName);
+            preparedStatement.setInt(2, movieId);
+            preparedStatement.executeUpdate();
+            System.out.println("Genre updated successfully!");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void insertNewGenreOnMovie() {
+        System.out.println("Enter the genres you want to add for a movie: ");
+        String insertGenreUpdate = scanner.nextLine();
+        System.out.println("Enter the movie ID you want the genres for: ");
+        int updateGenre = scanner.nextInt();
+        scanner.nextLine();
+        handleMovieGenre(insertGenreUpdate,updateGenre);
+    }
+
     private static void updateMovie(double movieRating, int movieId) {
         String sql = "UPDATE movies SET movieRating = ? WHERE movieId = ?";
         try {
@@ -158,7 +183,7 @@ public class Labb3JensNilssonJU23 {
         }
     }
 
-    private static void updateMovieOnId(){
+    private static void updateMovieOnId() {
         System.out.println("Enter the movie ID you want to update: ");
         int insertUpdate = scanner.nextInt();
         scanner.nextLine();
@@ -167,7 +192,7 @@ public class Labb3JensNilssonJU23 {
         double movieRating = 0.0;
         try {
             String ratingInput = scanner.nextLine();
-            ratingInput = ratingInput.replace(',','.');
+            ratingInput = ratingInput.replace(',', '.');
             movieRating = Double.parseDouble(ratingInput);
             if (movieRating < 0 || movieRating > 11) {
                 System.out.println("Invalid rating. Must be between 0 - 10.");
@@ -192,6 +217,8 @@ public class Labb3JensNilssonJU23 {
                     case "2" -> insertNewMovie();
                     case "3" -> updateMovieOnId();
                     case "4" -> deleteMovie();
+                    case "5" -> insertNewGenreOnMovie();
+                    case "6" -> printMenuOptions();
                     default -> System.out.print("Invalid option...\n");
                 }
             } catch (IndexOutOfBoundsException exception) {
