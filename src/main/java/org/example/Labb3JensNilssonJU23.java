@@ -52,16 +52,16 @@ public class Labb3JensNilssonJU23 {
         System.out.println(resultSet.getInt("movieId") + "\t" +
                 resultSet.getString("movieTitle") + "\t" +
                 resultSet.getString("movieDirector") + "\t" +
-                resultSet.getInt("movieRating") + "\t" +
+                resultSet.getString("movieRating") + "\t\t" +
                 resultSet.getInt("movieBudget") + "\t" +
                 resultSet.getInt("movieGross"));
     }
 
     private static void printMovieHeader() {
-        System.out.println("Movie ID:\tTitle\tDirector\tRating\tBudget\tGross");
+        System.out.println("Movie ID:\tTitle\tDirector\t\tRating\t\tBudget\t\tGross");
     }
 
-    private static void deleteAMovie(int id) {
+    private static void handleMovieDelete(int id) {
         String sql = "DELETE FROM movies WHERE movieId = ?";
 
         try {
@@ -76,22 +76,83 @@ public class Labb3JensNilssonJU23 {
         }
     }
 
-    private static void deleteMovie(){
+    private static void deleteMovie() {
         System.out.println("Insert the id of the movie you want to delete: ");
         int inputId = scanner.nextInt();
-        deleteAMovie(inputId);
+        handleMovieDelete(inputId);
         scanner.nextLine();
+    }
+
+    private static void handleMovieInsert(String movieTitle, String movieDirector,
+                                          float movieRating, int movieBudget, int movieGross) {
+        String sql = "INSERT INTO movies(movieTitle, movieDirector, movieRating," +
+                "movieBudget, movieGross) VALUES(?,?,?,?,?)";
+        try {
+            Connection connection = connect();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, movieTitle);
+            preparedStatement.setString(2, movieDirector);
+            preparedStatement.setFloat(3, movieRating);
+            preparedStatement.setInt(4, movieBudget);
+            preparedStatement.setInt(5, movieGross);
+            preparedStatement.executeUpdate();
+            System.out.println("You have added a new movie.");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void insertNewMovie() {
+        System.out.println("Enter the movie title: ");
+        String insertTitle = scanner.nextLine();
+
+        System.out.println("Enter the movie director: ");
+        String insertDirector = scanner.nextLine();
+
+        float insertRating = validateFloatInput("Enter the movie rating :");
+        int insertBudget = validateIntInput("Enter the movie budget: ");
+        int insertGross = validateIntInput("Enter the movie gross: ");
+        handleMovieInsert(insertTitle, insertDirector, insertRating, insertBudget, insertGross);
+    }
+
+    private static int validateIntInput(String x) {
+        int insertBudget;
+        while (true) {
+            try {
+                System.out.println(x);
+                insertBudget = Integer.parseInt(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Enter a valid input.");
+            }
+        }
+        return insertBudget;
+    }
+
+    private static float validateFloatInput(String prompt) {
+        float insertRating;
+        while (true) {
+            try {
+                System.out.println(prompt);
+                insertRating = Float.parseFloat(scanner.nextLine());
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Enter a valid input.");
+            }
+        }
+        return insertRating;
     }
 
     public static void main(String[] args) {
         String selection;
         do {
             printMenuOptions();
-            selection = scanner.next();
+            selection = scanner.nextLine();
             try {
                 switch (selection) {
                     case "0" -> System.out.println("Exiting the program...");
                     case "1" -> showAllMovies();
+                    case "2" -> insertNewMovie();
                     case "4" -> deleteMovie();
                     default -> System.out.print("Choose the right option...\n");
                 }
@@ -101,3 +162,5 @@ public class Labb3JensNilssonJU23 {
         } while (!selection.equals("0"));
     }
 }
+
+
