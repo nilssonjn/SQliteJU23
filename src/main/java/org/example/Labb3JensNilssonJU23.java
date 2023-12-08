@@ -25,7 +25,7 @@ public class Labb3JensNilssonJU23 {
                 0. Exit the program
                 1. Show all movies
                 2. Add a new movie
-                3. Update a movie
+                3. Update a movie rating
                 4. Delete a movie
                 5. Add movie genre
                 6. Show all genres
