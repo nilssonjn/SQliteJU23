@@ -29,7 +29,8 @@ public class Labb3JensNilssonJU23 {
                 4. Delete a movie
                 5. Add movie genre
                 6. Show all genres
-                7. Show all menu options
+                7. Show movies with genre
+                8. Show all menu options
                 """);
     }
 
@@ -40,6 +41,7 @@ public class Labb3JensNilssonJU23 {
             Connection connection = connect();
             Statement statement = connection.createStatement();
             ResultSet resultSet  = statement.executeQuery(sql);
+            printGenreHeader();
 
             while (resultSet.next()) {
                 printGenres(resultSet);
@@ -47,6 +49,10 @@ public class Labb3JensNilssonJU23 {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    private static void printGenreHeader() {
+        System.out.println("Genre ID\tGenre");
     }
 
     private static void printGenres(ResultSet resultSet) throws SQLException {
@@ -81,7 +87,7 @@ public class Labb3JensNilssonJU23 {
     }
 
     private static void printMovieHeader() {
-        System.out.println("Movie ID:\tTitle\tDirector\t\tRating\t\tBudget\t\tGross");
+        System.out.println("Movie ID\tTitle\tDirector\t\tRating\t\tBudget\t\tGross");
     }
 
     private static void handleMovieDelete(int id) {
@@ -166,29 +172,23 @@ public class Labb3JensNilssonJU23 {
         return insertRating;
     }
 
-    private static void handleMovieGenre(String genreName, int movieId) {
-        String sql = "UPDATE movieGenre SET movieGId = " +
-                "(SELECT genreId FROM genres WHERE genreName = ?)" +
-                "WHERE movieMId = ?";
+    private static void handleMovieGenreInsert(String genreName) {
+        String sql = "INSERT INTO genres(genreName) VALUES(?)";
         try {
             Connection connection = connect();
-            PreparedStatement preparedStatement = connect().prepareStatement(sql);
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, genreName);
-            preparedStatement.setInt(2, movieId);
             preparedStatement.executeUpdate();
-            System.out.println("Genre updated successfully!");
+            System.out.println("Genre added successfully!");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    private static void insertNewGenreOnMovie() {
+    private static void insertNewGenre() {
         System.out.println("Enter the genres you want to add for a movie: ");
         String insertGenreUpdate = scanner.nextLine();
-        System.out.println("Enter the movie ID you want the genres for: ");
-        int updateGenre = scanner.nextInt();
-        scanner.nextLine();
-        handleMovieGenre(insertGenreUpdate,updateGenre);
+        handleMovieGenreInsert(insertGenreUpdate);
     }
 
     private static void updateMovie(double movieRating, int movieId) {
@@ -227,6 +227,28 @@ public class Labb3JensNilssonJU23 {
         scanner.nextLine();
     }
 
+    private static void showMovieAndGenre(){
+        String sql = "SELECT movies.movieTitle, genres.genreName FROM genres " +
+                "INNER JOIN movieGenre ON genres.genreId = movieGenre.movieGId " +
+                "INNER JOIN movies ON movieGenre.movieMId = movies.movieId";
+        try {
+            Connection connection = connect();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            while (resultSet.next()) {
+                printMovieAndGenre(resultSet);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void printMovieAndGenre(ResultSet resultSet) throws SQLException {
+        System.out.println(resultSet.getString("movieTitle") + "\t" +
+                resultSet.getString("genreName"));
+    }
+
     public static void main(String[] args) {
         String selection;
         do {
@@ -239,9 +261,10 @@ public class Labb3JensNilssonJU23 {
                     case "2" -> insertNewMovie();
                     case "3" -> updateMovieOnId();
                     case "4" -> deleteMovie();
-                    case "5" -> insertNewGenreOnMovie();
+                    case "5" -> insertNewGenre();
                     case "6" -> showGenres();
-                    case "7" -> printMenuOptions();
+                    case "7" -> showMovieAndGenre();
+                    case "8" -> printMenuOptions();
                     default -> System.out.print("Invalid option...\n");
                 }
             } catch (IndexOutOfBoundsException exception) {
