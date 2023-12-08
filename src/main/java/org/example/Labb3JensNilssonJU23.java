@@ -227,6 +227,7 @@ public class Labb3JensNilssonJU23 {
         scanner.nextLine();
     }
 
+    // Will only show movieId 1 with genreId 1. Need a method for inserting movieGId and movieMId
     private static void showMovieAndGenre(){
         String sql = "SELECT movies.movieTitle, genres.genreName FROM genres " +
                 "INNER JOIN movieGenre ON genres.genreId = movieGenre.movieGId " +
