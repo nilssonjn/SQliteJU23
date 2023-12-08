@@ -52,7 +52,7 @@ public class Labb3JensNilssonJU23 {
     }
 
     private static void printGenreHeader() {
-        System.out.println("Genre ID\tGenre");
+        System.out.println("Genre ID:\tGenre:");
     }
 
     private static void printGenres(ResultSet resultSet) throws SQLException {
@@ -87,7 +87,7 @@ public class Labb3JensNilssonJU23 {
     }
 
     private static void printMovieHeader() {
-        System.out.println("Movie ID\tTitle\tDirector\t\tRating\t\tBudget\t\tGross");
+        System.out.println("Movie ID:\tTitle:\tDirector:\t\tRating:\t\tBudget:\t\tGross:");
     }
 
     private static void handleMovieDelete(int id) {
@@ -236,6 +236,7 @@ public class Labb3JensNilssonJU23 {
             Connection connection = connect();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
+            printMovieAndGenreHeader();
 
             while (resultSet.next()) {
                 printMovieAndGenre(resultSet);
@@ -248,6 +249,10 @@ public class Labb3JensNilssonJU23 {
     private static void printMovieAndGenre(ResultSet resultSet) throws SQLException {
         System.out.println(resultSet.getString("movieTitle") + "\t" +
                 resultSet.getString("genreName"));
+    }
+
+    private static void printMovieAndGenreHeader (){
+        System.out.println("Movie title:\t\tGenre:");
     }
 
     public static void main(String[] args) {
