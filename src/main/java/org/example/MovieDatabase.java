@@ -3,7 +3,7 @@ package org.example;
 import java.sql.*;
 import java.util.Scanner;
 
-public class Labb3JensNilssonJU23 {
+public class MovieDatabase {
 
     private static final Scanner scanner = new Scanner(System.in);
 
@@ -20,12 +20,11 @@ public class Labb3JensNilssonJU23 {
 
     private static void showGenres() {
         String sql = "SELECT * FROM genres";
-
         try {
             Connection connection = connect();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            printGenreHeader();
+            MenuHandler.printGenreHeader();
 
             while (resultSet.next()) {
                 printGenres(resultSet);
@@ -33,10 +32,6 @@ public class Labb3JensNilssonJU23 {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    private static void printGenreHeader() {
-        System.out.println("Genre ID:\tGenre:");
     }
 
     private static void printGenres(ResultSet resultSet) throws SQLException {
@@ -51,7 +46,7 @@ public class Labb3JensNilssonJU23 {
             Connection connection = connect();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            printMovieHeader();
+            MenuHandler.printMovieHeader();
 
             while (resultSet.next()) {
                 printMovieDetails(resultSet);
@@ -63,12 +58,11 @@ public class Labb3JensNilssonJU23 {
 
     private static void showAllFavouriteMovies() {
         String sql = "SELECT * FROM movies WHERE isFavourite = true";
-
         try {
             Connection connection = connect();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            printMovieHeader();
+            MenuHandler.printMovieHeader();
 
             while (resultSet.next()) {
                 printMovieDetails(resultSet);
@@ -88,13 +82,8 @@ public class Labb3JensNilssonJU23 {
                 (resultSet.getBoolean("isFavourite") ? "Favourite" : ""));
     }
 
-    private static void printMovieHeader() {
-        System.out.println("Movie ID:\tTitle:\tDirector:\t\tRating:\t\tBudget:\t\tGross:\t\tFavourite:");
-    }
-
     private static void handleMovieDelete(int id) {
         String sql = "DELETE FROM movies WHERE movieId = ?";
-
         try {
             Connection connection = connect();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -239,7 +228,7 @@ public class Labb3JensNilssonJU23 {
             Connection connection = connect();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            printMovieAndGenreHeader();
+            MenuHandler.printMovieAndGenreHeader();
 
             while (resultSet.next()) {
                 printMovieAndGenre(resultSet);
@@ -254,11 +243,7 @@ public class Labb3JensNilssonJU23 {
                 resultSet.getString("genreName"));
     }
 
-    private static void printMovieAndGenreHeader() {
-        System.out.println("Movie title:\t\tGenre:");
-    }
-
-    private static void allMoviesWithDirector() {
+    public static void allMoviesWithDirector() {
         System.out.println("Search for a director: ");
         String insertMovieDirector = scanner.nextLine();
         String sql = "SELECT * FROM movies WHERE movieDirector = ?";
@@ -268,7 +253,7 @@ public class Labb3JensNilssonJU23 {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, insertMovieDirector);
             ResultSet resultSet = preparedStatement.executeQuery();
-            printMovieAndDirectorHeader();
+            MenuHandler.printMovieAndDirectorHeader();
 
             while (resultSet.next()) {
                 System.out.println(resultSet.getString("movieTitle") + "\t\t" +
@@ -277,10 +262,6 @@ public class Labb3JensNilssonJU23 {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    private static void printMovieAndDirectorHeader (){
-        System.out.println("Movie title:\tMovie rating:");
     }
 
     private static void handleMovieFavourite(int movieId){
@@ -319,31 +300,11 @@ public class Labb3JensNilssonJU23 {
         }
     }
 
-    private static void printMenuOptions() {
-        System.out.print("""
-                Choose an option:
-                =================
-                0. Exit the program
-                1. Show all movies
-                2. Add a new movie
-                3. Update a movie rating
-                4. Delete a movie
-                5. Add movie genre
-                6. Show all genres
-                7. Show movies with genre
-                8. Search movies made by a director
-                9. Set movie as a favourite
-                10. Show all favourite movies
-                11. Show how many movies are saved
-                12. Show all menu options
-                """);
-    }
-
     public static void main(String[] args) {
         String selection;
         do {
-            printMenuOptions();
-            selection = scanner.nextLine();
+            MenuHandler.printMenuOptions();
+            selection = MenuHandler.getUserInput();
             try {
                 switch (selection) {
                     case "0" -> System.out.println("Exiting the program...");
@@ -358,7 +319,7 @@ public class Labb3JensNilssonJU23 {
                     case "9" -> setMovieFavourite();
                     case "10" -> showAllFavouriteMovies();
                     case "11" -> showHowManyMovies();
-                    case "12" -> printMenuOptions();
+                    case "12" -> MenuHandler.printMenuOptions();
                     default -> System.out.print("Invalid option...\n");
                 }
             } catch (IndexOutOfBoundsException exception) {
@@ -367,5 +328,3 @@ public class Labb3JensNilssonJU23 {
         } while (!selection.equals("0"));
     }
 }
-
-
