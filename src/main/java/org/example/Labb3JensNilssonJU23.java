@@ -30,17 +30,18 @@ public class Labb3JensNilssonJU23 {
                 5. Add movie genre
                 6. Show all genres
                 7. Show movies with genre
-                8. Show all menu options
+                8. Search movies made by a director
+                9. Show all menu options
                 """);
     }
 
-    private static void showGenres () {
+    private static void showGenres() {
         String sql = "SELECT * FROM genres";
 
         try {
             Connection connection = connect();
             Statement statement = connection.createStatement();
-            ResultSet resultSet  = statement.executeQuery(sql);
+            ResultSet resultSet = statement.executeQuery(sql);
             printGenreHeader();
 
             while (resultSet.next()) {
@@ -228,7 +229,7 @@ public class Labb3JensNilssonJU23 {
     }
 
     // Will only show movieId 1 with genreId 1. Need a method for inserting movieGId and movieMId
-    private static void showMovieAndGenre(){
+    private static void showMovieAndGenre() {
         String sql = "SELECT movies.movieTitle, genres.genreName FROM genres " +
                 "INNER JOIN movieGenre ON genres.genreId = movieGenre.movieGId " +
                 "INNER JOIN movies ON movieGenre.movieMId = movies.movieId";
@@ -251,9 +252,35 @@ public class Labb3JensNilssonJU23 {
                 resultSet.getString("genreName"));
     }
 
-    private static void printMovieAndGenreHeader (){
+    private static void printMovieAndGenreHeader() {
         System.out.println("Movie title:\t\tGenre:");
     }
+
+    private static void allMoviesWithDirector() {
+        System.out.println("Search for a director: ");
+        String insertMovieDirector = scanner.nextLine();
+        String sql = "SELECT * FROM movies WHERE movieDirector = ?";
+        //Could use a LIKE to catch spelling wrong when searching
+        try {
+            Connection connection = connect();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, insertMovieDirector);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            printMovieAndDirectorHeader();
+
+            while (resultSet.next()) {
+                System.out.println(resultSet.getString("movieTitle") + "\t\t" +
+                        resultSet.getDouble("movieRating"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void printMovieAndDirectorHeader (){
+        System.out.println("Movie title:\tMovie rating:");
+    }
+
 
     public static void main(String[] args) {
         String selection;
@@ -270,7 +297,8 @@ public class Labb3JensNilssonJU23 {
                     case "5" -> insertNewGenre();
                     case "6" -> showGenres();
                     case "7" -> showMovieAndGenre();
-                    case "8" -> printMenuOptions();
+                    case "8" -> allMoviesWithDirector();
+                    case "9" -> printMenuOptions();
                     default -> System.out.print("Invalid option...\n");
                 }
             } catch (IndexOutOfBoundsException exception) {
