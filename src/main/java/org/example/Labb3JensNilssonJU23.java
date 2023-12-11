@@ -303,6 +303,22 @@ public class Labb3JensNilssonJU23 {
         handleMovieFavourite(movieId);
     }
 
+    private static void showHowManyMovies () {
+        String sql = "SELECT COUNT(*) AS movieCount FROM movies";
+        try {
+            Connection connection = connect();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+
+            if (resultSet.next()) {
+                int movieCount = resultSet.getInt("movieCount");
+                System.out.println("Total number of movies: " + movieCount);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     private static void printMenuOptions() {
         System.out.print("""
                 Choose an option:
@@ -318,7 +334,8 @@ public class Labb3JensNilssonJU23 {
                 8. Search movies made by a director
                 9. Set movie as a favourite
                 10. Show all favourite movies
-                11. Show all menu options
+                11. Show how many movies are saved
+                12. Show all menu options
                 """);
     }
 
@@ -340,7 +357,8 @@ public class Labb3JensNilssonJU23 {
                     case "8" -> allMoviesWithDirector();
                     case "9" -> setMovieFavourite();
                     case "10" -> showAllFavouriteMovies();
-                    case "11" -> printMenuOptions();
+                    case "11" -> showHowManyMovies();
+                    case "12" -> printMenuOptions();
                     default -> System.out.print("Invalid option...\n");
                 }
             } catch (IndexOutOfBoundsException exception) {
