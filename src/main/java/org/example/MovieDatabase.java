@@ -56,6 +56,16 @@ public class MovieDatabase {
         }
     }
 
+    private static void printMovieDetails(ResultSet resultSet) throws SQLException {
+        System.out.println(resultSet.getInt("movieId") + "\t" +
+                resultSet.getString("movieTitle") + "\t" +
+                resultSet.getString("movieDirector") + "\t" +
+                resultSet.getString("movieRating") + "\t\t" +
+                resultSet.getInt("movieBudget") + "\t" +
+                resultSet.getInt("movieGross") + "\t" +
+                (resultSet.getBoolean("isFavourite") ? "Favourite" : ""));
+    }
+
     private static void showAllFavouriteMovies() {
         String sql = "SELECT * FROM movies WHERE isFavourite = true";
         try {
@@ -70,16 +80,6 @@ public class MovieDatabase {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
-    }
-
-    private static void printMovieDetails(ResultSet resultSet) throws SQLException {
-        System.out.println(resultSet.getInt("movieId") + "\t" +
-                resultSet.getString("movieTitle") + "\t" +
-                resultSet.getString("movieDirector") + "\t" +
-                resultSet.getString("movieRating") + "\t\t" +
-                resultSet.getInt("movieBudget") + "\t" +
-                resultSet.getInt("movieGross") + "\t" +
-                (resultSet.getBoolean("isFavourite") ? "Favourite" : ""));
     }
 
     private static void handleMovieDelete(int id) {
@@ -243,7 +243,7 @@ public class MovieDatabase {
                 resultSet.getString("genreName"));
     }
 
-    public static void allMoviesWithDirector() {
+    public static void handleShowDirectorWithMovies() {
         System.out.println("Search for a director: ");
         String insertMovieDirector = scanner.nextLine();
         String sql = "SELECT * FROM movies WHERE movieDirector = ?";
@@ -315,7 +315,7 @@ public class MovieDatabase {
                     case "5" -> insertNewGenre();
                     case "6" -> showGenres();
                     case "7" -> showMovieAndGenre();
-                    case "8" -> allMoviesWithDirector();
+                    case "8" -> handleShowDirectorWithMovies();
                     case "9" -> setMovieFavourite();
                     case "10" -> showAllFavouriteMovies();
                     case "11" -> showHowManyMovies();
