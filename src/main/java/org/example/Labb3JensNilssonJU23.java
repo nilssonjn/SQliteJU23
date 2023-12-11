@@ -61,17 +61,35 @@ public class Labb3JensNilssonJU23 {
         }
     }
 
+    private static void showAllFavouriteMovies() {
+        String sql = "SELECT * FROM movies WHERE isFavourite = true";
+
+        try {
+            Connection connection = connect();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            printMovieHeader();
+
+            while (resultSet.next()) {
+                printMovieDetails(resultSet);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
     private static void printMovieDetails(ResultSet resultSet) throws SQLException {
         System.out.println(resultSet.getInt("movieId") + "\t" +
                 resultSet.getString("movieTitle") + "\t" +
                 resultSet.getString("movieDirector") + "\t" +
                 resultSet.getString("movieRating") + "\t\t" +
                 resultSet.getInt("movieBudget") + "\t" +
-                resultSet.getInt("movieGross"));
+                resultSet.getInt("movieGross") + "\t" +
+                (resultSet.getBoolean("isFavourite") ? "Favourite" : ""));
     }
 
     private static void printMovieHeader() {
-        System.out.println("Movie ID:\tTitle:\tDirector:\t\tRating:\t\tBudget:\t\tGross:");
+        System.out.println("Movie ID:\tTitle:\tDirector:\t\tRating:\t\tBudget:\t\tGross:\t\tFavourite:");
     }
 
     private static void handleMovieDelete(int id) {
@@ -99,7 +117,7 @@ public class Labb3JensNilssonJU23 {
     private static void handleMovieInsert(String movieTitle, String movieDirector,
                                           double movieRating, int movieBudget, int movieGross) {
         String sql = "INSERT INTO movies(movieTitle, movieDirector, movieRating," +
-                "movieBudget, movieGross) VALUES(?,?,?,?,?)";
+                "movieBudget, movieGross, isFavourite) VALUES(?,?,?,?,?,?)";
         try {
             Connection connection = connect();
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
@@ -108,6 +126,7 @@ public class Labb3JensNilssonJU23 {
             preparedStatement.setDouble(3, movieRating);
             preparedStatement.setInt(4, movieBudget);
             preparedStatement.setInt(5, movieGross);
+            preparedStatement.setBoolean(6, false);
             preparedStatement.executeUpdate();
             System.out.println("You have added a new movie.");
         } catch (SQLException e) {
@@ -264,6 +283,26 @@ public class Labb3JensNilssonJU23 {
         System.out.println("Movie title:\tMovie rating:");
     }
 
+    private static void handleMovieFavourite(int movieId){
+        String sql = "UPDATE movies SET isFavourite = true WHERE movieId = ?";
+        try {
+            Connection connection = connect();
+            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setInt(1, movieId);
+            preparedStatement.executeUpdate();
+            System.out.println("Movie marked as favourite!");
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private static void setMovieFavourite (){
+        System.out.println("Enter the ID of the movie you want as favourite: ");
+        int movieId = scanner.nextInt();
+        scanner.nextLine();
+        handleMovieFavourite(movieId);
+    }
+
     private static void printMenuOptions() {
         System.out.print("""
                 Choose an option:
@@ -277,7 +316,9 @@ public class Labb3JensNilssonJU23 {
                 6. Show all genres
                 7. Show movies with genre
                 8. Search movies made by a director
-                9. Show all menu options
+                9. Set movie as a favourite
+                10. Show all favourite movies
+                11. Show all menu options
                 """);
     }
 
@@ -297,7 +338,9 @@ public class Labb3JensNilssonJU23 {
                     case "6" -> showGenres();
                     case "7" -> showMovieAndGenre();
                     case "8" -> allMoviesWithDirector();
-                    case "9" -> printMenuOptions();
+                    case "9" -> setMovieFavourite();
+                    case "10" -> showAllFavouriteMovies();
+                    case "11" -> printMenuOptions();
                     default -> System.out.print("Invalid option...\n");
                 }
             } catch (IndexOutOfBoundsException exception) {
