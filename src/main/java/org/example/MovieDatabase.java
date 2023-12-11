@@ -24,7 +24,7 @@ public class MovieDatabase {
             Connection connection = connect();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            MenuHandler.printGenreHeader();
+            MenuView.printGenreHeader();
 
             while (resultSet.next()) {
                 printGenres(resultSet);
@@ -46,7 +46,7 @@ public class MovieDatabase {
             Connection connection = connect();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            MenuHandler.printMovieHeader();
+            MenuView.printMovieHeader();
 
             while (resultSet.next()) {
                 printMovieDetails(resultSet);
@@ -62,7 +62,7 @@ public class MovieDatabase {
             Connection connection = connect();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            MenuHandler.printMovieHeader();
+            MenuView.printMovieHeader();
 
             while (resultSet.next()) {
                 printMovieDetails(resultSet);
@@ -228,7 +228,7 @@ public class MovieDatabase {
             Connection connection = connect();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            MenuHandler.printMovieAndGenreHeader();
+            MenuView.printMovieAndGenreHeader();
 
             while (resultSet.next()) {
                 printMovieAndGenre(resultSet);
@@ -253,7 +253,7 @@ public class MovieDatabase {
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, insertMovieDirector);
             ResultSet resultSet = preparedStatement.executeQuery();
-            MenuHandler.printMovieAndDirectorHeader();
+            MenuView.printMovieAndDirectorHeader();
 
             while (resultSet.next()) {
                 System.out.println(resultSet.getString("movieTitle") + "\t\t" +
@@ -303,8 +303,8 @@ public class MovieDatabase {
     public static void main(String[] args) {
         String selection;
         do {
-            MenuHandler.printMenuOptions();
-            selection = MenuHandler.getUserInput();
+            MenuView.printMenuOptions();
+            selection = MenuView.getUserInput();
             try {
                 switch (selection) {
                     case "0" -> System.out.println("Exiting the program...");
@@ -319,7 +319,7 @@ public class MovieDatabase {
                     case "9" -> setMovieFavourite();
                     case "10" -> showAllFavouriteMovies();
                     case "11" -> showHowManyMovies();
-                    case "12" -> MenuHandler.printMenuOptions();
+                    case "12" -> MenuView.printMenuOptions();
                     default -> System.out.print("Invalid option...\n");
                 }
             } catch (IndexOutOfBoundsException exception) {
