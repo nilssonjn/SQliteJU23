@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 public class Labb3JensNilssonJU23 {
 
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     private static Connection connect() {
         String url = "jdbc:sqlite:/Users/jensnilsson/Documents/sqlite- filer/SQliteLabb3JensNilssonJU23.db";
@@ -16,23 +16,6 @@ public class Labb3JensNilssonJU23 {
             System.out.println(e.getMessage());
         }
         return connection;
-    }
-
-    private static void printMenuOptions() {
-        System.out.print("""
-                Choose an option:
-                =================
-                0. Exit the program
-                1. Show all movies
-                2. Add a new movie
-                3. Update a movie rating
-                4. Delete a movie
-                5. Add movie genre
-                6. Show all genres
-                7. Show movies with genre
-                8. Search movies made by a director
-                9. Show all menu options
-                """);
     }
 
     private static void showGenres() {
@@ -281,6 +264,22 @@ public class Labb3JensNilssonJU23 {
         System.out.println("Movie title:\tMovie rating:");
     }
 
+    private static void printMenuOptions() {
+        System.out.print("""
+                Choose an option:
+                =================
+                0. Exit the program
+                1. Show all movies
+                2. Add a new movie
+                3. Update a movie rating
+                4. Delete a movie
+                5. Add movie genre
+                6. Show all genres
+                7. Show movies with genre
+                8. Search movies made by a director
+                9. Show all menu options
+                """);
+    }
 
     public static void main(String[] args) {
         String selection;
