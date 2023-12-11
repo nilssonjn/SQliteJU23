@@ -216,7 +216,6 @@ public class MovieDatabase {
             scanner.nextLine();
         }
         updateMovie(movieRating, insertUpdate);
-        scanner.nextLine();
     }
 
     // Will only show movieId 1 with genreId 1. Need a method for inserting movieGId and movieMId
