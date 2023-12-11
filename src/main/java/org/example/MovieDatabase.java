@@ -290,7 +290,7 @@ public class MovieDatabase {
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
 
-            if (resultSet.next()) {
+            while (resultSet.next()) {
                 int movieCount = resultSet.getInt("movieCount");
                 System.out.println("Total number of movies: " + movieCount);
             }
